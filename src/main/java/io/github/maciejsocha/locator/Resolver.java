@@ -1,7 +1,7 @@
 package io.github.maciejsocha.locator;
 
 public class Resolver {
-    public static String resolveXpath(String pattern, String paramName) {
+    public static String resolveLocator(String pattern, String paramName) {
         if (pattern == null) {
             return null;
         }
