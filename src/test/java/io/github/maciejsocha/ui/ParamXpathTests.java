@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -31,9 +32,13 @@ public class ParamXpathTests {
 
     @BeforeEach
     public void startBrowser() throws InterruptedException {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
+        driver = new ChromeDriver(options);
+
         PageFactory.initElements(driver, this);
         ParametrizedLocatorFactory.initElements(driver, this);
+
         driver.get(PAGE_URL);
         Thread.sleep(Duration.ofSeconds(3));
     }
@@ -62,6 +67,8 @@ public class ParamXpathTests {
 
     @AfterEach
     public void stopBrowser() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
