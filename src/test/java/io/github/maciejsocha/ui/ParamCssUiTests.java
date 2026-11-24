@@ -10,30 +10,50 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 public class ParamCssUiTests extends BaseUiTests {
-    private final String USERNAME_TEXT = "login";
-    private final String PASSWORD_TEXT = "asdf";
-
     @FindBy(css = "input#username")
     private WebElement cssUsernameInput;
     @FindBy(css = "input#password")
     private WebElement cssPasswordInput;
     @ParamFindBy(css = "input#{0}")
     private ParametrizedLocator paramCssInput;
+
     @FindBy(css = "button[data-i18n='login']")
     private WebElement cssSignInButton;
     @ParamFindBy(css = "button[data-i18n='{0}']")
     private ParametrizedLocator paramCssButton;
+
     @FindBy(css = "p[data-status='error']")
     private WebElement cssLoginErrorMessage;
 
+    @FindBy(css = "select[name='country']")
+    private WebElement cssCountryDropdown;
+    @ParamFindBy(css = "select[name='{0}']")
+    private ParametrizedLocator paramCssDropdown;
+    @FindBy(css = "input[type='checkbox'][id='terms']")
+    private WebElement acceptTermsCheckbox;
+    @ParamFindBy(css = "input[type='checkbox'][id='{0}']")
+    private ParametrizedLocator paramCssCheckbox;
+    @FindBy(css = "button[data-i18n='submit']")
+    private WebElement cssSubmitButton;
+    @FindBy(css = "p[class='msg'][id='form-msg']")
+    private WebElement cssSubmissionMessage;
+
     @BeforeEach
     public void startBrowser() throws InterruptedException {
-        startBrowserAndNavigateToPage("automation-demo.html");
+        startBrowserAndNavigateToPage();
 
         PageFactory.initElements(driver, this);
         ParametrizedLocatorFactory.initElements(driver, this);
+    }
+
+    @AfterEach
+    public void stopBrowser() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
@@ -72,10 +92,42 @@ public class ParamCssUiTests extends BaseUiTests {
         Assertions.assertTrue(cssLoginErrorMessage.isDisplayed());
     }
 
-    @AfterEach
-    public void stopBrowser() {
-        if (driver != null) {
-            driver.quit();
-        }
+    @Test
+    public void testCssLocatorDropdownSelection() {
+        Select countrySelect = new Select(cssCountryDropdown);
+        countrySelect.selectByVisibleText("Czechia");
+
+        Assertions.assertEquals("Czechia", countrySelect.getFirstSelectedOption().getText());
+
+        acceptTermsCheckbox.click();
+        cssSubmitButton.click();
+
+        Assertions.assertTrue(cssSubmissionMessage.isDisplayed());
+    }
+
+    @Test
+    public void testParametrizedXpathLocatorDropdownSelection() {
+        Select countrySelect = new Select(paramCssDropdown.resolve("country"));
+        countrySelect.selectByVisibleText("Czechia");
+
+        Assertions.assertEquals("Czechia", countrySelect.getFirstSelectedOption().getText());
+
+        acceptTermsCheckbox.click();
+        cssSubmitButton.click();
+
+        Assertions.assertTrue(cssSubmissionMessage.isDisplayed());
+    }
+
+    @Test
+    public void testParametrizedXpathLocatorCheckboxSelection() {
+        Select countrySelect = new Select(paramCssDropdown.resolve("country"));
+        countrySelect.selectByVisibleText("Czechia");
+
+        Assertions.assertEquals("Czechia", countrySelect.getFirstSelectedOption().getText());
+
+        paramCssCheckbox.resolve("terms").click();
+        cssSubmitButton.click();
+
+        Assertions.assertTrue(cssSubmissionMessage.isDisplayed());
     }
 }
