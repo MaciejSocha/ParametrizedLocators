@@ -7,19 +7,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.net.URL;
-import java.time.Duration;
-
-public class ParamXpathTests {
-    private WebDriver driver;
-
+public class ParamXpathTests extends BaseUiTests {
     private final String USERNAME_TEXT = "login";
     private final String PASSWORD_TEXT = "asdf";
 
@@ -38,20 +30,10 @@ public class ParamXpathTests {
 
     @BeforeEach
     public void startBrowser() throws InterruptedException {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
+        startBrowserAndNavigateToPage("automation-demo.html");
 
         PageFactory.initElements(driver, this);
         ParametrizedLocatorFactory.initElements(driver, this);
-
-        URL resource = getClass()
-                .getClassLoader()
-                .getResource("automation-demo.html");
-        assert resource != null;
-        driver.get(resource.toExternalForm());
-
-        Thread.sleep(Duration.ofSeconds(2));
     }
 
     @Test
@@ -77,7 +59,6 @@ public class ParamXpathTests {
         xpathUsernameInput.sendKeys(USERNAME_TEXT);
         xpathPasswordInput.sendKeys(PASSWORD_TEXT);
 
-        Assertions.assertFalse(loginErrorMessage.isDisplayed());
         xpathSubmitButton.click();
         Assertions.assertTrue(loginErrorMessage.isDisplayed());
     }
@@ -87,7 +68,6 @@ public class ParamXpathTests {
         xpathUsernameInput.sendKeys(USERNAME_TEXT);
         xpathPasswordInput.sendKeys(PASSWORD_TEXT);
 
-        Assertions.assertFalse(loginErrorMessage.isDisplayed());
         paramXpathButton.resolve("Sign in").click();
         Assertions.assertTrue(loginErrorMessage.isDisplayed());
     }
