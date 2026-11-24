@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple test automation page</title>
+<meta name="description" content="Single test automation page">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+</div></header>
+<main class="wrap">
+<h1>Simple test automation page</h1>
+<p class="lead">Tests for Selenium</p>
+<p>Login data: <code>demo</code> / <code>demo123</code>. Elements has: <code>id</code>, <code>name</code> i <code>data-testid</code>.</p>
+
+<section class="demo" id="language">
+<h2 data-i18n="langTitle"></h2>
+<button id="lang-en" data-lang="en">EN</button>
+</section>
+
+<section class="demo" id="login">
+<h2 data-i18n="loginTitle"></h2>
+<form id="login-form" data-testid="login-form">
+<label for="username" data-i18n="user"></label>
+<input type="text" id="username" name="username" data-testid="username" autocomplete="off">
+<label for="password" data-i18n="pass"></label>
+<input type="password" id="password" name="password" data-testid="password" autocomplete="off">
+<p><button type="submit" class="primary" id="login-btn" data-i18n="login"></button></p>
+</form>
+<p class="msg" id="login-msg" role="status" data-testid="login-msg"></p>
+</section>
+
+<section class="demo" id="users">
+<h2 data-i18n="usersTitle"></h2>
+<div class="tbl"><table id="users-table">
+<thead><tr><th data-i18n="name"></th><th data-i18n="role"></th><th data-i18n="actions"></th></tr></thead>
+<tbody id="users-body"></tbody>
+</table></div>
+<p class="msg" id="users-msg" role="status"></p>
+</section>
+
+<section class="demo" id="form">
+<h2 data-i18n="formTitle"></h2>
+<form id="order-form">
+<label for="country" data-i18n="country"></label>
+<select id="country" name="country">
+<option value="pl" data-i18n="cPl"></option>
+<option value="de" data-i18n="cDe"></option>
+<option value="cz" data-i18n="cCz"></option>
+</select>
+<div class="check"><input type="checkbox" id="terms" name="terms"><label for="terms" data-i18n="terms"></label></div>
+<button type="submit" class="primary" id="submit-btn" data-i18n="submit"></button>
+</form>
+<p class="msg" id="form-msg" role="status"></p>
+</section>
+
+<section class="demo" id="delay">
+<h2 data-i18n="delayTitle"></h2>
+<button id="load-btn" data-i18n="load"></button>
+<p class="msg" id="delay-box" role="status"></p>
+</section>
+
+<section class="demo" id="dialogs">
+<h2 data-i18n="dialogTitle"></h2>
+<button id="alert-btn" data-i18n="alert"></button>
+<button id="confirm-btn" data-i18n="confirm"></button>
+<p class="msg" id="dialog-msg" role="status"></p>
+</section>
+
+<h2>Table</h2>
+<pre><code>@FindByParameterized(xpath =
+    "//tr[td[text()='{wec:user.name}']]//button[@name='{wec:user.action}']")
+WebElement userAction;</code></pre>
+</main>
+<footer><div class="wrap">© 2026 Maciej Socha</div></footer>
+<script src="assets/demo.js"></script>
+</body>
+</html>

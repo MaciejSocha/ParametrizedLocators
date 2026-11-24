@@ -14,21 +14,27 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.net.URL;
 import java.time.Duration;
 
 public class ParamXpathTests {
     private WebDriver driver;
 
-    private final String PAGE_URL = "https://practicetestautomation.com/practice-test-login/";
     private final String USERNAME_TEXT = "login";
     private final String PASSWORD_TEXT = "asdf";
 
     @FindBy(xpath = "//input[@id='username']")
-    private WebElement xpathUsername;
+    private WebElement xpathUsernameInput;
     @FindBy(xpath = "//input[@id='password']")
-    private WebElement xpathPassword;
+    private WebElement xpathPasswordInput;
     @ParamFindBy(xpath = "//input[@id='{0}']")
     private ParametrizedLocator paramXpathInput;
+    @FindBy(xpath = "//button[text()='Sign in']")
+    private WebElement xpathSubmitButton;
+    @ParamFindBy(xpath = "//button[text()='{0}']")
+    private ParametrizedLocator paramXpathButton;
+    @FindBy(xpath = "//p[@data-status='error']")
+    private WebElement loginErrorMessage;
 
     @BeforeEach
     public void startBrowser() throws InterruptedException {
@@ -39,30 +45,51 @@ public class ParamXpathTests {
         PageFactory.initElements(driver, this);
         ParametrizedLocatorFactory.initElements(driver, this);
 
-        driver.get(PAGE_URL);
-        Thread.sleep(Duration.ofSeconds(3));
+        URL resource = getClass()
+                .getClassLoader()
+                .getResource("automation-demo.html");
+        assert resource != null;
+        driver.get(resource.toExternalForm());
+
+        Thread.sleep(Duration.ofSeconds(2));
     }
 
     @Test
-    public void testSeleniumXpathLocator() {
-        Assertions.assertEquals(PAGE_URL, driver.getCurrentUrl());
+    public void testSeleniumXpathLocatorInputText() {
+        xpathUsernameInput.sendKeys(USERNAME_TEXT);
+        xpathPasswordInput.sendKeys(PASSWORD_TEXT);
 
-        xpathUsername.sendKeys(USERNAME_TEXT);
-        xpathPassword.sendKeys(PASSWORD_TEXT);
-
-        Assertions.assertEquals(USERNAME_TEXT, xpathUsername.getDomProperty("value"));
-        Assertions.assertEquals(PASSWORD_TEXT, xpathPassword.getDomProperty("value"));
+        Assertions.assertEquals(USERNAME_TEXT, xpathUsernameInput.getDomProperty("value"));
+        Assertions.assertEquals(PASSWORD_TEXT, xpathPasswordInput.getDomProperty("value"));
     }
 
     @Test
-    public void testParametrizedXpathLocator() {
-        Assertions.assertEquals(PAGE_URL, driver.getCurrentUrl());
-
+    public void testParametrizedXpathLocatorInputText() {
         paramXpathInput.resolve("username").sendKeys(USERNAME_TEXT);
         paramXpathInput.resolve("password").sendKeys(PASSWORD_TEXT);
 
-        Assertions.assertEquals(USERNAME_TEXT, xpathUsername.getDomProperty("value"));
-        Assertions.assertEquals(PASSWORD_TEXT, xpathPassword.getDomProperty("value"));
+        Assertions.assertEquals(USERNAME_TEXT, xpathUsernameInput.getDomProperty("value"));
+        Assertions.assertEquals(PASSWORD_TEXT, xpathPasswordInput.getDomProperty("value"));
+    }
+
+    @Test
+    public void testXpathLocatorClickButton() {
+        xpathUsernameInput.sendKeys(USERNAME_TEXT);
+        xpathPasswordInput.sendKeys(PASSWORD_TEXT);
+
+        Assertions.assertFalse(loginErrorMessage.isDisplayed());
+        xpathSubmitButton.click();
+        Assertions.assertTrue(loginErrorMessage.isDisplayed());
+    }
+
+    @Test
+    public void testParametrizedXpathLocatorClickButton() {
+        xpathUsernameInput.sendKeys(USERNAME_TEXT);
+        xpathPasswordInput.sendKeys(PASSWORD_TEXT);
+
+        Assertions.assertFalse(loginErrorMessage.isDisplayed());
+        paramXpathButton.resolve("Sign in").click();
+        Assertions.assertTrue(loginErrorMessage.isDisplayed());
     }
 
     @AfterEach
